@@ -1,5 +1,5 @@
 # face.evoLVe: High-Performance Face Recognition Library based on PyTorch
-* Evolve to be more comprehensive, effective and efficient for face related analytics \& applications!
+* Evolve to be more comprehensive, effective and efficient for face related analytics \& applications! ([WeChat News](https://mp.weixin.qq.com/s/V8VoyMqVvjblH358ozcWEg))
 * About the name:
   * "face" means this repo is dedicated for face related analytics \& applications.
   * "evolve" means unleash your greatness to be better and better. "LV" are capitalized to acknowledge the nurturing of Learning and Vision ([LV](http://www.lv-nus.org)) group, Nation University of Singapore (NUS).
@@ -17,15 +17,15 @@ The code of [face.evoLVe](#Introduction) is released under the MIT License.
 ****
 ## News
 
+:triangular_flag_on_post: **`OPEN 08 Mar 2019`**: We are training [IR-50 v2.0](https://arxiv.org/pdf/1512.03385.pdf), [IR-SE-50](https://arxiv.org/pdf/1512.03385.pdf), [ResNet-50](https://arxiv.org/pdf/1512.03385.pdf), [IR-SE-50](https://arxiv.org/pdf/1709.01507.pdf) and [IR-152](https://arxiv.org/pdf/1512.03385.pdf) models on [MS-Celeb-1M_Align_112x112](https://arxiv.org/pdf/1607.08221.pdf), and will release them soon.
+
 :white_check_mark: **`CLOSED 23 Jan 2019`**: ~~The current distributed training schema with multi-GPUs under PyTorch and other mainstream platforms parallels the backbone across multi-GPUs while relying on a single master to compute the final bottleneck (fully-connected/softmax) layer. This is not an issue for conventional face recognition with moderate number of identities. However, it struggles with large-scale face recognition, which requires recognizing millions of identities in the real world. The master can hardly hold the oversized final layer while the slaves still have redundant computation resource, leading to small-batch training or even failed training. To address this problem, we are developing a highly-elegant, effective and efficient distributed training schema with multi-GPUs under PyTorch, supporting not only the backbone, but also the head with the fully-connected (softmax) layer, to facilitate high-performance large-scale face recognition. We will added this support into our repo.~~
 
-:triangular_flag_on_post: **`OPEN 23 Jan 2019`**: We will release [MS-Celeb-1M_Align_224x224](https://arxiv.org/pdf/1607.08221.pdf) soon to facilitate larger-resolution face recongition model training.
+:white_check_mark: **`CLOSED 22 Jan 2019`**: ~~We have released two feature extraction APIs for extracting features from pre-trained models, implemented with PyTorch build-in functions and OpenCV, respectively. Please check ```./util/extract_feature_v1.py``` and ```./util/extract_feature_v2.py```.~~
 
-:triangular_flag_on_post: **`OPEN 22 Jan 2019`**: We have released two feature extraction APIs for extracting features from pre-trained models, implemented with PyTorch build-in functions and OpenCV, respectively. Please check ```./util/extract_feature_v1.py``` and ```./util/extract_feature_v2.py```.
+:white_check_mark: **`CLOSED 22 Jan 2019`**: ~~We are fine-tuning our released [IR-50](https://arxiv.org/pdf/1512.03385.pdf) model on our private Asia face data, which will be released soon to facilitate high-performance Asia face recognition.~~
 
-:triangular_flag_on_post: **`OPEN 22 Jan 2019`**: We are fine-tuning our released [IR-50](https://arxiv.org/pdf/1602.07261.pdf) model on our private Asia face data, which will be released soon to facilitate high-performance Asia face recognition.
-
-:triangular_flag_on_post: **`OPEN 21 Jan 2019`**: We are training a better-performing [IR-50](https://arxiv.org/pdf/1602.07261.pdf) model on [MS-Celeb-1M_Align_112x112](https://arxiv.org/pdf/1607.08221.pdf), and will replace the current model soon.
+:white_check_mark: **`CLOSED 21 Jan 2019`**: ~~We are training a better-performing [IR-50](https://arxiv.org/pdf/1512.03385.pdf) model on [MS-Celeb-1M_Align_112x112](https://arxiv.org/pdf/1607.08221.pdf), and will replace the current model soon.~~
   
 ****
 ## Contents
@@ -49,7 +49,7 @@ The code of [face.evoLVe](#Introduction) is released under the MIT License.
 
 <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig1.png" width="450px"/>  <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig17.png" width="400px"/>
 
-* This repo provides a comprehensive face recognition library for face related analytics \& applications, including face alignment (detection, landmark localization, affine transformation, *etc.*), data processing (*e.g.*, augmentation, data balancing, normalization, *etc.*), various backbones (*e.g.*, [ResNet](https://arxiv.org/pdf/1512.03385.pdf), [IR](https://arxiv.org/pdf/1602.07261.pdf), [IR-SE](https://arxiv.org/pdf/1709.01507.pdf), ResNeXt, SE-ResNeXt, DenseNet, [LightCNN](https://arxiv.org/pdf/1511.02683.pdf), MobileNet, ShuffleNet, DPN, *etc.*), various losses (*e.g.*, Softmax, [Focal](https://arxiv.org/pdf/1708.02002.pdf), Center, [SphereFace](https://arxiv.org/pdf/1704.08063.pdf), [CosFace](https://arxiv.org/pdf/1801.09414.pdf), [AmSoftmax](https://arxiv.org/pdf/1704.06369.pdf), [ArcFace](https://arxiv.org/pdf/1801.07698.pdf), Triplet, *etc.*) and bags of tricks for improving performance (*e.g.*, training refinements, model tweaks, knowledge distillation, *etc.*).
+* This repo provides a comprehensive face recognition library for face related analytics \& applications, including face alignment (detection, landmark localization, affine transformation, *etc.*), data processing (*e.g.*, augmentation, data balancing, normalization, *etc.*), various backbones (*e.g.*, [ResNet](https://arxiv.org/pdf/1512.03385.pdf), [IR](https://arxiv.org/pdf/1512.03385.pdf), [IR-SE](https://arxiv.org/pdf/1709.01507.pdf), ResNeXt, SE-ResNeXt, DenseNet, [LightCNN](https://arxiv.org/pdf/1511.02683.pdf), MobileNet, ShuffleNet, DPN, *etc.*), various losses (*e.g.*, Softmax, [Focal](https://arxiv.org/pdf/1708.02002.pdf), Center, [SphereFace](https://arxiv.org/pdf/1704.08063.pdf), [CosFace](https://arxiv.org/pdf/1801.09414.pdf), [AmSoftmax](https://arxiv.org/pdf/1801.05599.pdf), [ArcFace](https://arxiv.org/pdf/1801.07698.pdf), Triplet, *etc.*) and bags of tricks for improving performance (*e.g.*, training refinements, model tweaks, knowledge distillation, *etc.*).
 * The current distributed training schema with multi-GPUs under PyTorch and other mainstream platforms parallels the backbone across multi-GPUs while relying on a single master to compute the final bottleneck (fully-connected/softmax) layer. This is not an issue for conventional face recognition with moderate number of identities. However, it struggles with large-scale face recognition, which requires recognizing millions of identities in the real world. The master can hardly hold the oversized final layer while the slaves still have redundant computation resource, leading to small-batch training or even failed training. To address this problem, this repo provides a highly-elegant, effective and efficient distributed training schema with multi-GPUs under PyTorch, supporting not only the backbone, but also the head with the fully-connected (softmax) layer, to facilitate high-performance large-scale face recognition.
 * All data before \& after alignment, source codes and trained models are provided.
 * This repo can help researchers/engineers develop high-performance deep face recognition models and algorithms quickly for practical use and deployment.
@@ -116,7 +116,10 @@ While not required, for optimal performance it is **highly** recommended to run 
   # python face_align.py -source_root './data/test' -dest_root './data/test_Aligned' -crop_size 112
   ```
 * For macOS users, there is no need to worry about ```*.DS_Store``` files which may ruin your data, since they will be automatically removed when you run the scripts.
-* Keynotes for customed use: 1) specify the arguments of ```source_root```, ```dest_root``` and ```crop_size``` to your own values when you run ```face_align.py```; 2) pass your customed ```min_face_size```, ```thresholds``` and ```nms_thresholds``` values to the ```detect_faces``` function of ```detector.py``` to match your practical requirements.
+* Keynotes for customed use: 1) specify the arguments of ```source_root```, ```dest_root``` and ```crop_size``` to your own values when you run ```face_align.py```; 2) pass your customed ```min_face_size```, ```thresholds``` and ```nms_thresholds``` values to the ```detect_faces``` function of ```detector.py``` to match your practical requirements; 3) if you find the speed using face alignment API is a bit slow, you can call face resize API to firstly resize the image whose smaller size is larger than a threshold (specify the arguments of ```source_root```, ```dest_root``` and ```min_side``` to your own values) before calling the face alignment API:
+  ```
+  python face_resize.py
+  ```
 
 ****
 ### Data Processing 
@@ -168,7 +171,7 @@ While not required, for optimal performance it is **highly** recommended to run 
           STAGES = [35, 65, 95], # epoch stages to decay learning rate
 
           DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
-          MULTI_GPU = True, # flag to use multiple GPUs
+          MULTI_GPU = True, # flag to use multiple GPUs; if you choose to train with single GPU, you should first run "export CUDA_VISILE_DEVICES=device_id" to specify the GPU card you want to use
           GPU_ID = [0, 1, 2, 3], # specify your GPU ids
           PIN_MEMORY = True,
           NUM_WORKERS = 0,
@@ -189,7 +192,7 @@ While not required, for optimal performance it is **highly** recommended to run 
     from backbone.model_irse import IR_50, IR_101, IR_152, IR_SE_50, IR_SE_101, IR_SE_152
     from head.metrics import ArcFace, CosFace, SphereFace, Am_softmax
     from loss.focal import FocalLoss
-    from util.utils import make_weights_for_balanced_classes, get_val_data, separate_irse_bn_paras, separate_resnet_bn_paras, warm_up_lr, schedule_lr, perform_val, get_time, buffer_val, AverageMeter, accuracy, save_checkpoint
+    from util.utils import make_weights_for_balanced_classes, get_val_data, separate_irse_bn_paras, separate_resnet_bn_paras, warm_up_lr, schedule_lr, perform_val, get_time, buffer_val, AverageMeter, accuracy
 
     from tensorboardX import SummaryWriter
     from tqdm import tqdm
@@ -247,7 +250,7 @@ While not required, for optimal performance it is **highly** recommended to run 
                              std = RGB_STD),
     ])
 
-    dataset_train = datasets.ImageFolder(os.path.join(DATA_ROOT, 'images'), train_transform)
+    dataset_train = datasets.ImageFolder(os.path.join(DATA_ROOT, 'imgs'), train_transform)
 
     # create a weighted random sampler to process imbalanced data
     weights = make_weights_for_balanced_classes(dataset_train.imgs, len(dataset_train.classes))
@@ -266,20 +269,19 @@ While not required, for optimal performance it is **highly** recommended to run 
     ```
   * Define and initialize model (backbone \& head):
     ```python
-    BACKBONE_DICT = {'ResNet_50': ResNet_50(INPUT_SIZE, EMBEDDING_SIZE), 
-                     'ResNet_101': ResNet_101(INPUT_SIZE, EMBEDDING_SIZE),
-                     'ResNet_152': ResNet_152(INPUT_SIZE, EMBEDDING_SIZE),
-                     'IR_50': IR_50(INPUT_SIZE),
-                     'IR_101': IR_101(INPUT_SIZE),
+    BACKBONE_DICT = {'ResNet_50': ResNet_50(INPUT_SIZE), 
+                     'ResNet_101': ResNet_101(INPUT_SIZE), 
+                     'ResNet_152': ResNet_152(INPUT_SIZE),
+                     'IR_50': IR_50(INPUT_SIZE), 
+                     'IR_101': IR_101(INPUT_SIZE), 
                      'IR_152': IR_152(INPUT_SIZE),
-                     'IR_SE_50': IR_SE_50(INPUT_SIZE),
-                     'IR_SE_101': IR_SE_101(INPUT_SIZE),
+                     'IR_SE_50': IR_SE_50(INPUT_SIZE), 
+                     'IR_SE_101': IR_SE_101(INPUT_SIZE), 
                      'IR_SE_152': IR_SE_152(INPUT_SIZE)}
     BACKBONE = BACKBONE_DICT[BACKBONE_NAME]
     print("=" * 60)
     print(BACKBONE)
     print("{} Backbone Generated".format(BACKBONE_NAME))
-    print("{} have {} paramerters in total".format(BACKBONE_NAME, sum(x.numel() for x in BACKBONE.parameters())))
     print("=" * 60)
 
     HEAD_DICT = {'ArcFace': ArcFace(in_features = EMBEDDING_SIZE, out_features = NUM_CLASS, device_id = GPU_ID),
@@ -294,7 +296,8 @@ While not required, for optimal performance it is **highly** recommended to run 
     ```
   * Define and initialize loss function:
     ```python
-    LOSS_DICT = {'Focal': FocalLoss(), 'Softmax': nn.CrossEntropyLoss()}
+    LOSS_DICT = {'Focal': FocalLoss(), 
+                 'Softmax': nn.CrossEntropyLoss()}
     LOSS = LOSS_DICT[LOSS_NAME]
     print("=" * 60)
     print(LOSS)
@@ -331,7 +334,7 @@ While not required, for optimal performance it is **highly** recommended to run 
   * Whether use multi-GPU or not:
     ```python
     if MULTI_GPU:
-        # multi-GPU setting (deploy data parallel for BACKBONE and model parallel for HEAD (implemented in ./head/metrics.py))
+        # multi-GPU setting
         BACKBONE = nn.DataParallel(BACKBONE, device_ids = GPU_ID)
         BACKBONE = BACKBONE.to(DEVICE)
     else:
@@ -478,6 +481,7 @@ While not required, for optimal performance it is **highly** recommended to run 
   
     <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig12.png" width="900px"/>
     
+* Monitor on-the-fly GPU occupancy with ```watch -d -n 0.01 nvidia-smi```.
 * Please refer to Sec. [Model Zoo](#Model-Zoo) for specific model weights and corresponding performance.
 * Feature extraction API (extract features from pre-trained models) ```./util/extract_feature_v1.py``` (implemented with PyTorch build-in functions) and ```./util/extract_feature_v2.py``` (implemented with OpenCV).
 * Visualize training \& validation statistics with tensorboardX (see Sec. [Model Zoo](#Model-Zoo)):
@@ -493,17 +497,16 @@ While not required, for optimal performance it is **highly** recommended to run 
 |:---:|:----:|:-----:|:-----:|:-----:|:-----:|:-----:|
 |[LFW](https://hal.inria.fr/file/index/docid/321923/filename/Huang_long_eccv2008-lfw.pdf)|Raw|5,749|13,233|-|-|[Google Drive](https://drive.google.com/file/d/1JIgAXYqXrH-RbUvcsB3B6LXctLU9ijBA/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1VzSI_xqiBw-uHKyRbi6zzw)|
 |[LFW](https://hal.inria.fr/file/index/docid/321923/filename/Huang_long_eccv2008-lfw.pdf)|Align_250x250|5,749|13,233|-|-|[Google Drive](https://drive.google.com/file/d/11h-QIrhuszY3PzT17Q5eXw8yrewgqX7m/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1Ir8kAcQjBJA6A_pWPL9ozQ)|
-|[LFW](https://hal.inria.fr/file/index/docid/321923/filename/Huang_long_eccv2008-lfw.pdf)|Align_112x112|5,749|13,233|-|-|[Google Drive](https://drive.google.com/file/d/1o5BugNFAfs-X9amdOquPRI5EwmceM2sE/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1j0aC8Ln6pNZ1BG8X0i3S2w)|
+|[LFW](https://hal.inria.fr/file/index/docid/321923/filename/Huang_long_eccv2008-lfw.pdf)|Align_112x112|5,749|13,233|-|-|[Google Drive](https://drive.google.com/file/d/1WO5Meh_yAau00Gm2Rz2Pc0SRldLQYigT/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1Ew5JZ266bkg00jB5ICt78g)|
 |[CALFW](https://arxiv.org/pdf/1708.08197.pdf)|Raw|4,025|12,174|-|-|[Google Drive](https://drive.google.com/file/d/1LcIDIfeZ027tbyUJDbaDt12ZoMVJuoMp/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/17IzL_nGzedup1gcPuob0NQ)|
 |[CALFW](https://arxiv.org/pdf/1708.08197.pdf)|Align_112x112|4,025|12,174|-|-|[Google Drive](https://drive.google.com/file/d/1kpmcDeDmPqUcI5uX0MCBzpP_8oQVojzW/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1IxqyLFfHNQaj3ibjc7Vcvg)|
 |[CPLFW](http://www.whdeng.cn/CPLFW/Cross-Pose-LFW.pdf)|Raw|3,884|11,652|-|-|[Google Drive](https://drive.google.com/file/d/1WipxZ1QXs_Fi6Y5qEFDayEgos3rHDRnS/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1gJuZZcm-2crTrqKI0sa5sA)|
-|[CPLFW](http://www.whdeng.cn/CPLFW/Cross-Pose-LFW.pdf)|Align_112x112|3,884|11,652|-|-|[Google Drive](https://drive.google.com/file/d/1DJ8VYzc56GVXsWJQIj722yxlmaKV63_8/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1HvzLtuFGCC0rRO5h3HvF-g)|
+|[CPLFW](http://www.whdeng.cn/CPLFW/Cross-Pose-LFW.pdf)|Align_112x112|3,884|11,652|-|-|[Google Drive](https://drive.google.com/file/d/14vPvDngGzsc94pQ4nRNfuBTxdv7YVn2Q/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1uqK2LAEE91HYqllgsWcj9A)|
 |[CASIA-WebFace](https://arxiv.org/pdf/1411.7923.pdf)|Raw_v1|10,575|494,414|-|-|[Baidu Drive](https://pan.baidu.com/s/1xh073sKX3IYp9xPm9S6F5Q)|
 |[CASIA-WebFace](https://arxiv.org/pdf/1411.7923.pdf)|Raw_v2|10,575|494,414|-|-|[Google Drive](https://drive.google.com/file/d/19R6Svdj5HbUA0y6aJv3P1WkIR5wXeCnO/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1cZqsRxln-JmrA4xevLfjYQ)|
 |[CASIA-WebFace](https://arxiv.org/pdf/1411.7923.pdf)|Clean|10,575|455,594|-|-|[Google Drive](https://drive.google.com/file/d/1wJC2aPA4AC0rI-tAL2BFs2M8vfcpX-w6/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1x_VJlG9WV1OdrrJ7ARUZQw)|
 |[MS-Celeb-1M](https://arxiv.org/pdf/1607.08221.pdf)|Clean|100,000|5,084,127|-|-|[Google Drive](https://drive.google.com/file/d/18FxgfXgKwuYzY3DmWJXNJuY51TPmC9yH/view?usp=sharing)|
-|[MS-Celeb-1M](https://arxiv.org/pdf/1607.08221.pdf)|Align_224x224|100,000|5,084,127|-|-| |
-|[MS-Celeb-1M](https://arxiv.org/pdf/1607.08221.pdf)|Align_112x112|85,742|5,822,653|-|-|[Google Drive](https://drive.google.com/file/d/1tFMAuCfu6mZl7xHaqbEtCAKF0Bi4RoN2/view?usp=sharing)|
+|[MS-Celeb-1M](https://arxiv.org/pdf/1607.08221.pdf)|Align_112x112|85,742|5,822,653|-|-|[Google Drive](https://drive.google.com/file/d/1X202mvYe5tiXFhOx82z4rPiPogXD435i/view?usp=sharing)|
 |[Vggface2](https://arxiv.org/pdf/1710.08092.pdf)|Clean|8,631|3,086,894|-|-|[Google Drive](https://drive.google.com/file/d/1jdZw6ZmB7JRK6RS6QP3YEr2sufJ5ibtO/view?usp=sharing)|
 |[Vggface2_FP](https://arxiv.org/pdf/1710.08092.pdf)|Align_112x112|-|-|-|-|[Google Drive](https://drive.google.com/file/d/1N7QEEQZPJ2s5Hs34urjseFwIoPVSmn4r/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1STSgORPyRT-eyk5seUTcRA)|
 |[AgeDB](http://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/papers/Moschoglou_AgeDB_The_First_CVPR_2017_paper.pdf)|Raw|570|16,488|-|-|[Google Drive](https://drive.google.com/file/d/1FoZDyzTrs8r_oFM3Xqmi3iAHsnoirTRA/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1-E_hkW-bXsXNYRiAhRPM7A)|
@@ -511,12 +514,13 @@ While not required, for optimal performance it is **highly** recommended to run 
 |[IJB-A](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Klare_Pushing_the_Frontiers_2015_CVPR_paper.pdf)|Clean|500|5,396|20,369|2,085|[Google Drive](https://drive.google.com/file/d/1WdQ62XJuvw0_K4MUP5nXOhv2RsEBVB1f/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1iN68cdiPO0bTTN_hwmbe9w)|
 |[IJB-B](http://openaccess.thecvf.com/content_cvpr_2017_workshops/w6/papers/Whitelam_IARPA_Janus_Benchmark-B_CVPR_2017_paper.pdf)|Raw|1,845|21,798|55,026|7,011|[Google Drive](https://drive.google.com/file/d/15oibCHL3NX-q-QV8q_UAmbIr9e_M0n1R/view?usp=sharing)|
 |[CFP](http://www.cfpw.io/paper.pdf)|Raw|500|7,000|-|-|[Google Drive](https://drive.google.com/file/d/1tGNtqzWeUx3BYAxRHBbH1Wy7AmyFtZkU/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/10Qq64LO_RWKD2cr_D32_6A)|
-|[CFP](http://www.cfpw.io/paper.pdf)|Align_112x112|500|7,000|-|-|[Google Drive](https://drive.google.com/file/d/1MWp7NGqzpkYeXl-WiKIINHc3F4o-aT6D/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1kvGaVP5dluJ4GgUFsR3QVA)|
+|[CFP](http://www.cfpw.io/paper.pdf)|Align_112x112|500|7,000|-|-|[Google Drive](https://drive.google.com/file/d/1-sDn79lTegXRNhFuRnIRsgdU88cBfW6V/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1DpudKyw_XN1Y491n1f-DtA)|
 |[Umdfaces](https://arxiv.org/pdf/1611.01484.pdf)|Align_112x112|8,277|367,888|-|-|[Google Drive](https://drive.google.com/file/d/13IDdIMqPCd8h1vWOYBkW6T5bjAxwmxm5/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1UzrBMguV5YLh8aawIodKeQ)|
 |[CelebA](https://arxiv.org/pdf/1411.7766.pdf)|Raw|10,177|202,599|-|-|[Google Drive](https://drive.google.com/file/d/1FO_p759JtKOf3qOnxOGpmoxCcnKiPdBI/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1DfvDKKEB11MrZcf7hPjJfw)|
 |[CACD-VS](http://cmlab.csie.ntu.edu.tw/~sirius42/papers/chen14eccv.pdf)|Raw|2,000|163,446|-|-|[Google Drive](https://drive.google.com/file/d/1syrMyJGeXYxbjbmWKLxo1ASzpj2DRrk3/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/13XI67Zn_D_Kncp_9hlTbQQ)|
 |[YTF](http://www.cs.tau.ac.il/~wolf/ytfaces/WolfHassnerMaoz_CVPR11.pdf)|Align_344x344|1,595|-|3,425|621,127|[Google Drive](https://drive.google.com/file/d/1o_5b7rYcSEFvTmwmEh0eCPsU5kFmKN_Y/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1M43AcijgGrurb0dfFVlDKQ)|
 |[DeepGlint](http://trillionpairs.deepglint.com)|Align_112x112|180,855|6,753,545|-|-|[Google Drive](https://drive.google.com/file/d/1Lqvh24913uquWxa3YS_APluEmbNKQ4Us/view?usp=sharing)|
+|[UTKFace](https://susanqq.github.io/UTKFace/)|Align_200x200|-|23,708|-|-|[Google Drive](https://drive.google.com/file/d/1T5KH-DWXu048im0xBuRK0WEi820T28B-/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/12Qp5pdZvitqBYSJHm4ouOw)|
 * Remark: unzip [CASIA-WebFace](https://arxiv.org/pdf/1411.7923.pdf) clean version with 
   ```
   unzip casia-maxpy-clean.zip    
@@ -554,36 +558,27 @@ While not required, for optimal performance it is **highly** recommended to run 
 
   |Backbone|Head|Loss|Training Data|Download Link|
   |:---:|:---:|:---:|:---:|:---:|
-  |[IR-50](https://arxiv.org/pdf/1602.07261.pdf)|[ArcFace](https://arxiv.org/pdf/1801.07698.pdf)|[Focal](https://arxiv.org/pdf/1708.02002.pdf)|[MS-Celeb-1M_Align_112x112](https://arxiv.org/pdf/1607.08221.pdf)|[Google Drive](https://drive.google.com/file/d/1SKhC-iwZ5yX8kDv9mpLiC94ixLIwGd99/view?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1RKvDsU9CJNtNJiNk8PjU1Q)|
+  |[IR-50](https://arxiv.org/pdf/1512.03385.pdf)|[ArcFace](https://arxiv.org/pdf/1801.07698.pdf)|[Focal](https://arxiv.org/pdf/1708.02002.pdf)|[MS-Celeb-1M_Align_112x112](https://arxiv.org/pdf/1607.08221.pdf)|[Google Drive](https://drive.google.com/drive/folders/1omzvXV_djVIW2A7I09DWMe9JR-9o_MYh?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/1L8yOF1oZf6JHfeY9iN59Mg)|
 
   * Setting
     ```
-    INPUT_SIZE: [112, 112]; RGB_MEAN: [0.5, 0.5, 0.5]; RGB_STD: [0.5, 0.5, 0.5]; BATCH_SIZE: 1024 (drop the last batch to ensure consistent batch_norm statistics); Initial LR: 0.1; WEIGHT_DECAY: 5e-4 (do not apply to batch_norm parameters); MOMENTUM: 0.9; Augmentation: Random Crop + Horizontal Flip; Imbalanced Data Processing: Weighted Random Sampling; Solver: SGD; GPUs: 8 NVIDIA Tesla P40 in Parallel
+    INPUT_SIZE: [112, 112]; RGB_MEAN: [0.5, 0.5, 0.5]; RGB_STD: [0.5, 0.5, 0.5]; BATCH_SIZE: 512 (drop the last batch to ensure consistent batch_norm statistics); Initial LR: 0.1; NUM_EPOCH: 120; WEIGHT_DECAY: 5e-4 (do not apply to batch_norm parameters); MOMENTUM: 0.9; STAGES: [30, 60, 90]; Augmentation: Random Crop + Horizontal Flip; Imbalanced Data Processing: Weighted Random Sampling; Solver: SGD; GPUs: 4 NVIDIA Tesla P40 in Parallel
     ```
   * Training \& validation statistics
-    * Stage1 (```LR: 0.1; EPOCH: 1-9; TIME: ~1.95s/iter```)
-
-      <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig13.png" width="1000px"/>
+  
+    <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig13.png" width="1000px"/>
       
-    * Stage2 (```LR: 0.01; EPOCH: 10-24; TIME: ~1.95s/iter```)
-
-      <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig15.png" width="1000px"/>
-      
-    * Stage3 (```LR: 0.001; EPOCH: 25-30; TIME: ~1.95s/iter```)
-
-      <img src="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch/blob/master/disp/Fig16.png" width="1000px"/>
-
-  * Performance (havn't converge well yet; can be further improved by training up to 30 epochs per stage; will release a better model soon)
+  * Performance
 
     |[LFW](https://hal.inria.fr/file/index/docid/321923/filename/Huang_long_eccv2008-lfw.pdf)|[CFP_FF](http://www.cfpw.io/paper.pdf)|[CFP_FP](http://www.cfpw.io/paper.pdf)|[AgeDB](http://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/papers/Moschoglou_AgeDB_The_First_CVPR_2017_paper.pdf)|[CALFW](https://arxiv.org/pdf/1708.08197.pdf)|[CPLFW](http://www.whdeng.cn/CPLFW/Cross-Pose-LFW.pdf)|[Vggface2_FP](https://arxiv.org/pdf/1710.08092.pdf)|
     |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-    |99.73|99.71|97.15|97.64|95.81|90.00|94.88|
+    |99.81|99.68|97.32|97.50|95.75|91.05|94.88|
 
 * Model
 
   |Backbone|Head|Loss|Training Data|Download Link|
   |:---:|:---:|:---:|:---:|:---:|
-  |[IR-50](https://arxiv.org/pdf/1602.07261.pdf)|[ArcFace](https://arxiv.org/pdf/1801.07698.pdf)|[Focal](https://arxiv.org/pdf/1708.02002.pdf)|Private Asia Face Data| |
+  |[IR-50](https://arxiv.org/pdf/1512.03385.pdf)|[ArcFace](https://arxiv.org/pdf/1801.07698.pdf)|[Focal](https://arxiv.org/pdf/1708.02002.pdf)|Private Asia Face Data|[Google Drive](https://drive.google.com/drive/folders/11TI4Gs_lO-fbts7cgWNqvVfm9nps2msE?usp=sharing), [Baidu Drive](https://pan.baidu.com/s/18BSUeA1bpAeRWTprtHgX9w)|
 
   * Setting
     ```

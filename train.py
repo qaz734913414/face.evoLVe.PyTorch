@@ -9,7 +9,7 @@ from backbone.model_resnet import ResNet_50, ResNet_101, ResNet_152
 from backbone.model_irse import IR_50, IR_101, IR_152, IR_SE_50, IR_SE_101, IR_SE_152
 from head.metrics import ArcFace, CosFace, SphereFace, Am_softmax
 from loss.focal import FocalLoss
-from util.utils import make_weights_for_balanced_classes, get_val_data, separate_irse_bn_paras, separate_resnet_bn_paras, warm_up_lr, schedule_lr, perform_val, get_time, buffer_val, AverageMeter, accuracy, save_checkpoint
+from util.utils import make_weights_for_balanced_classes, get_val_data, separate_irse_bn_paras, separate_resnet_bn_paras, warm_up_lr, schedule_lr, perform_val, get_time, buffer_val, AverageMeter, accuracy
 
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                              std = RGB_STD),
     ])
 
-    dataset_train = datasets.ImageFolder(os.path.join(DATA_ROOT, 'images'), train_transform)
+    dataset_train = datasets.ImageFolder(os.path.join(DATA_ROOT, 'imgs'), train_transform)
 
     # create a weighted random sampler to process imbalanced data
     weights = make_weights_for_balanced_classes(dataset_train.imgs, len(dataset_train.classes))
@@ -86,20 +86,19 @@ if __name__ == '__main__':
 
 
     #======= model & loss & optimizer =======#
-    BACKBONE_DICT = {'ResNet_50': ResNet_50(INPUT_SIZE, EMBEDDING_SIZE), 
-                     'ResNet_101': ResNet_101(INPUT_SIZE, EMBEDDING_SIZE),
-                     'ResNet_152': ResNet_152(INPUT_SIZE, EMBEDDING_SIZE),
-                     'IR_50': IR_50(INPUT_SIZE),
-                     'IR_101': IR_101(INPUT_SIZE),
+    BACKBONE_DICT = {'ResNet_50': ResNet_50(INPUT_SIZE), 
+                     'ResNet_101': ResNet_101(INPUT_SIZE), 
+                     'ResNet_152': ResNet_152(INPUT_SIZE),
+                     'IR_50': IR_50(INPUT_SIZE), 
+                     'IR_101': IR_101(INPUT_SIZE), 
                      'IR_152': IR_152(INPUT_SIZE),
-                     'IR_SE_50': IR_SE_50(INPUT_SIZE),
-                     'IR_SE_101': IR_SE_101(INPUT_SIZE),
+                     'IR_SE_50': IR_SE_50(INPUT_SIZE), 
+                     'IR_SE_101': IR_SE_101(INPUT_SIZE), 
                      'IR_SE_152': IR_SE_152(INPUT_SIZE)}
     BACKBONE = BACKBONE_DICT[BACKBONE_NAME]
     print("=" * 60)
     print(BACKBONE)
     print("{} Backbone Generated".format(BACKBONE_NAME))
-    print("{} have {} paramerters in total".format(BACKBONE_NAME, sum(x.numel() for x in BACKBONE.parameters())))
     print("=" * 60)
 
     HEAD_DICT = {'ArcFace': ArcFace(in_features = EMBEDDING_SIZE, out_features = NUM_CLASS, device_id = GPU_ID),
@@ -112,7 +111,8 @@ if __name__ == '__main__':
     print("{} Head Generated".format(HEAD_NAME))
     print("=" * 60)
 
-    LOSS_DICT = {'Focal': FocalLoss(), 'Softmax': nn.CrossEntropyLoss()}
+    LOSS_DICT = {'Focal': FocalLoss(), 
+                 'Softmax': nn.CrossEntropyLoss()}
     LOSS = LOSS_DICT[LOSS_NAME]
     print("=" * 60)
     print(LOSS)
@@ -144,7 +144,7 @@ if __name__ == '__main__':
         print("=" * 60)
 
     if MULTI_GPU:
-        # multi-GPU setting (deploy data parallel for BACKBONE and model parallel for HEAD (implemented in ./head/metrics.py))
+        # multi-GPU setting
         BACKBONE = nn.DataParallel(BACKBONE, device_ids = GPU_ID)
         BACKBONE = BACKBONE.to(DEVICE)
     else:

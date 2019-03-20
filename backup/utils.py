@@ -14,7 +14,7 @@ import io
 import os
 
 
-# Support: ['get_time', 'l2_norm', 'make_weights_for_balanced_classes', 'get_val_pair', 'get_val_data', 'separate_irse_bn_paras', 'separate_resnet_bn_paras', 'warm_up_lr', 'schedule_lr', 'de_preprocess', 'hflip_batch', 'ccrop_batch', 'gen_plot', 'perform_val', 'buffer_val', 'AverageMeter', 'accuracy']
+# Support: ['get_time', 'l2_norm', 'make_weights_for_balanced_classes', 'get_val_pair', 'get_val_data', 'separate_irse_bn_paras', 'separate_resnet_bn_paras', 'warm_up_lr', 'schedule_lr', 'de_preprocess', 'hflip_batch', 'gen_plot', 'perform_val', 'buffer_val', 'AverageMeter', 'accuracy', 'save_checkpoint']
 
 
 def get_time():
@@ -140,24 +140,6 @@ def hflip_batch(imgs_tensor):
     return hfliped_imgs
 
 
-ccrop = transforms.Compose([
-            de_preprocess,
-            transforms.ToPILImage(),
-            transforms.Resize([128, 128]),  # smaller side resized
-            transforms.CenterCrop([112, 112]),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
-
-
-def ccrop_batch(imgs_tensor):
-    ccropped_imgs = torch.empty_like(imgs_tensor)
-    for i, img_ten in enumerate(imgs_tensor):
-        ccropped_imgs[i] = ccrop(img_ten)
-
-    return ccropped_imgs
-
-
 def gen_plot(fpr, tpr):
     """Create a pyplot plot and save to buffer."""
     plt.figure()
@@ -187,24 +169,20 @@ def perform_val(multi_gpu, device, embedding_size, batch_size, backbone, carray,
         while idx + batch_size <= len(carray):
             batch = torch.tensor(carray[idx:idx + batch_size])
             if tta:
-                ccropped = ccrop_batch(batch)
-                fliped = hflip_batch(ccropped)
-                emb_batch = backbone(ccropped.to(device)).cpu() + backbone(fliped.to(device)).cpu()
+                fliped = hflip_batch(batch)
+                emb_batch = backbone(batch.to(device)).cpu() + backbone(fliped.to(device)).cpu()
                 embeddings[idx:idx + batch_size] = l2_norm(emb_batch)
             else:
-                ccropped = ccrop_batch(batch)
-                embeddings[idx:idx + batch_size] = l2_norm(backbone(ccropped.to(device))).cpu()
+                embeddings[idx:idx + batch_size] = backbone(batch.to(device)).cpu()
             idx += batch_size
         if idx < len(carray):
             batch = torch.tensor(carray[idx:])
             if tta:
-                ccropped = ccrop_batch(batch)
-                fliped = hflip_batch(ccropped)
-                emb_batch = backbone(ccropped.to(device)).cpu() + backbone(fliped.to(device)).cpu()
+                fliped = hflip_batch(batch)
+                emb_batch = backbone(batch.to(device)).cpu() + backbone(fliped.to(device)).cpu()
                 embeddings[idx:] = l2_norm(emb_batch)
             else:
-                ccropped = ccrop_batch(batch)
-                embeddings[idx:] = l2_norm(backbone(ccropped.to(device))).cpu()
+                embeddings[idx:] = backbone(batch.to(device)).cpu()
 
     tpr, fpr, accuracy, best_thresholds = evaluate(embeddings, issame, nrof_folds)
     buf = gen_plot(fpr, tpr)
@@ -253,3 +231,7 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
 
     return res
+
+
+def save_checkpoint(state, filename):
+    torch.save(state, filename)

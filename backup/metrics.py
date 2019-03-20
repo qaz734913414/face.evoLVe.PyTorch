@@ -9,40 +9,24 @@ import math
 
 # Support: ['Softmax', 'ArcFace', 'CosFace', 'SphereFace', 'Am_softmax']
 
+
 class Softmax(nn.Module):
     r"""Implement of Softmax (normal classification head):
         Args:
             in_features: size of each input sample
             out_features: size of each output sample
-            device_id: the ID of GPU where the model will be trained by model parallel. 
-                       if device_id=None, it will be trained on CPU without model parallel.
         """
-    def __init__(self, in_features, out_features, device_id):
+    def __init__(self, in_features, out_features):
         super(Softmax, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.device_id = device_id
+        self.fc = nn.Linear(self.in_features, self.out_features)
 
-        self.weight = Parameter(torch.FloatTensor(out_features, in_features))
-        self.bias = Parameter(torch.FloatTensor(out_features))
-        nn.init.xavier_uniform_(self.weight)
-        nn.init.zero_(self.bias)
+        self._initialize_weights()
 
     def forward(self, x):
-        if self.device_id == None:
-            out = F.linear(x, self.weight, self.bias)
-        else:
-            sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
-            sub_biases = torch.chunk(self.bias, len(self.device_id), dim=0)
-            temp_x = x.cuda(self.device_id[0])
-            weight = sub_weights[0].cuda(self.device_id[0])
-            bias = sub_biases[0].cuda(self.device_id[0])
-            out = F.linear(temp_x, weight, bias)
-            for i in range(1, len(self.device_id)):
-                temp_x = x.cuda(self.device_id[i])
-                weight = sub_weights[i].cuda(self.device_id[i])
-                bias = sub_biases[i].cuda(self.device_id[i])
-                out = torch.cat((out, F.linear(temp_x, weight, bias).cuda(self.device_id[0])), dim=1)
+        out = self.fc(x)
+
         return out
 
     def _initialize_weights(self):
@@ -68,24 +52,19 @@ class ArcFace(nn.Module):
         Args:
             in_features: size of each input sample
             out_features: size of each output sample
-            device_id: the ID of GPU where the model will be trained by model parallel. 
-                       if device_id=None, it will be trained on CPU without model parallel.
             s: norm of input feature
             m: margin
             cos(theta+m)
         """
-    def __init__(self, in_features, out_features, device_id, s = 64.0, m = 0.50, easy_margin = False): # s = 30.0
+    def __init__(self, in_features, out_features, s = 64.0, m = 0.50, easy_margin = False): # s = 30.0
         super(ArcFace, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.device_id = device_id
-
         self.s = s
         self.m = m
-        
         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
         nn.init.xavier_uniform_(self.weight)
-      
+
         self.easy_margin = easy_margin
         self.cos_m = math.cos(m)
         self.sin_m = math.sin(m)
@@ -94,18 +73,7 @@ class ArcFace(nn.Module):
 
     def forward(self, input, label):
         # --------------------------- cos(theta) & phi(theta) ---------------------------
-        if self.device_id == None:
-            cosine = F.linear(F.normalize(input), F.normalize(self.weight))
-        else:
-            x = input
-            sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
-            temp_x = x.cuda(self.device_id[0])
-            weight = sub_weights[0].cuda(self.device_id[0])
-            cosine = F.linear(F.normalize(temp_x), F.normalize(weight))
-            for i in range(1, len(self.device_id)):
-                temp_x = x.cuda(self.device_id[i])
-                weight = sub_weights[i].cuda(self.device_id[i])
-                cosine = torch.cat((cosine, F.linear(F.normalize(temp_x), F.normalize(weight)).cuda(self.device_id[0])), dim=1) 
+        cosine = F.linear(F.normalize(input), F.normalize(self.weight))
         sine = torch.sqrt(1.0 - torch.pow(cosine, 2))
         phi = cosine * self.cos_m - sine * self.sin_m
         if self.easy_margin:
@@ -113,9 +81,8 @@ class ArcFace(nn.Module):
         else:
             phi = torch.where(cosine > self.th, phi, cosine - self.mm)
         # --------------------------- convert label to one-hot ---------------------------
-        one_hot = torch.zeros(cosine.size())
-        if self.device_id != None:
-            one_hot = one_hot.cuda(self.device_id[0])
+        # one_hot = torch.zeros(cosine.size(), requires_grad=True, device='cuda')
+        one_hot = torch.zeros(cosine.size(), device = 'cuda')
         one_hot.scatter_(1, label.view(-1, 1).long(), 1)
         # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
         output = (one_hot * phi) + ((1.0 - one_hot) * cosine)  # you can use torch.where if your torch.__version__ is 0.4
@@ -129,42 +96,25 @@ class CosFace(nn.Module):
     Args:
         in_features: size of each input sample
         out_features: size of each output sample
-        device_id: the ID of GPU where the model will be trained by model parallel. 
-                       if device_id=None, it will be trained on CPU without model parallel.
         s: norm of input feature
         m: margin
         cos(theta)-m
     """
-    def __init__(self, in_features, out_features, device_id, s = 64.0, m = 0.35): # s = 30.0, m = 0.40
+    def __init__(self, in_features, out_features, s = 64.0, m = 0.35): # s = 30.0, m = 0.40
         super(CosFace, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.device_id = device_id
         self.s = s
         self.m = m
-
         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
         nn.init.xavier_uniform_(self.weight)
 
     def forward(self, input, label):
         # --------------------------- cos(theta) & phi(theta) ---------------------------
-        if self.device_id == None:
-            cosine = F.linear(F.normalize(input), F.normalize(self.weight))
-        else:
-            x = input
-            sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
-            temp_x = x.cuda(self.device_id[0])
-            weight = sub_weights[0].cuda(self.device_id[0])
-            cosine = F.linear(F.normalize(temp_x), F.normalize(weight))
-            for i in range(1, len(self.device_id)):
-                temp_x = x.cuda(self.device_id[i])
-                weight = sub_weights[i].cuda(self.device_id[i])
-                cosine = torch.cat((cosine, F.linear(F.normalize(temp_x), F.normalize(weight)).cuda(self.device_id[0])), dim=1)
+        cosine = F.linear(F.normalize(input), F.normalize(self.weight))
         phi = cosine - self.m
         # --------------------------- convert label to one-hot ---------------------------
-        one_hot = torch.zeros(cosine.size())
-        if self.device_id != None:
-            one_hot = one_hot.cuda(self.device_id[0])
+        one_hot = torch.zeros(cosine.size(), device = 'cuda')
         # one_hot = one_hot.cuda() if cosine.is_cuda else one_hot
         one_hot.scatter_(1, label.view(-1, 1).long(), 1)
         # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
@@ -180,17 +130,16 @@ class CosFace(nn.Module):
                + ', s = ' + str(self.s) \
                + ', m = ' + str(self.m) + ')'
 
+
 class SphereFace(nn.Module):
     r"""Implement of SphereFace (https://arxiv.org/pdf/1704.08063.pdf):
     Args:
         in_features: size of each input sample
         out_features: size of each output sample
-        device_id: the ID of GPU where the model will be trained by model parallel. 
-                       if device_id=None, it will be trained on CPU without model parallel.
         m: margin
         cos(m*theta)
     """
-    def __init__(self, in_features, out_features, device_id, m = 4):
+    def __init__(self, in_features, out_features, m = 4.0):
         super(SphereFace, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
@@ -200,8 +149,6 @@ class SphereFace(nn.Module):
         self.power = 1
         self.LambdaMin = 5.0
         self.iter = 0
-        self.device_id = device_id
-
         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
         nn.init.xavier_uniform_(self.weight)
 
@@ -221,19 +168,7 @@ class SphereFace(nn.Module):
         self.lamb = max(self.LambdaMin, self.base * (1 + self.gamma * self.iter) ** (-1 * self.power))
 
         # --------------------------- cos(theta) & phi(theta) ---------------------------
-        if self.device_id == None:
-            cos_theta = F.linear(F.normalize(input), F.normalize(self.weight))
-        else:
-            x = input
-            sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
-            temp_x = x.cuda(self.device_id[0])
-            weight = sub_weights[0].cuda(self.device_id[0])
-            cos_theta = F.linear(F.normalize(temp_x), F.normalize(weight))
-            for i in range(1, len(self.device_id)):
-                temp_x = x.cuda(self.device_id[i])
-                weight = sub_weights[i].cuda(self.device_id[i])
-                cos_theta = torch.cat((cos_theta, F.linear(F.normalize(temp_x), F.normalize(weight)).cuda(self.device_id[0])), dim=1)
-
+        cos_theta = F.linear(F.normalize(input), F.normalize(self.weight))
         cos_theta = cos_theta.clamp(-1, 1)
         cos_m_theta = self.mlambda[self.m](cos_theta)
         theta = cos_theta.data.acos()
@@ -243,8 +178,7 @@ class SphereFace(nn.Module):
 
         # --------------------------- convert label to one-hot ---------------------------
         one_hot = torch.zeros(cos_theta.size())
-        if self.device_id != None:
-            one_hot = one_hot.cuda(self.device_id[0])
+        one_hot = one_hot.cuda() if cos_theta.is_cuda else one_hot
         one_hot.scatter_(1, label.view(-1, 1), 1)
 
         # --------------------------- Calculate output ---------------------------
@@ -268,41 +202,25 @@ def l2_norm(input, axis = 1):
 
 
 class Am_softmax(nn.Module):
-    r"""Implement of Am_softmax (https://arxiv.org/pdf/1801.05599.pdf):
+    r"""Implement of Am_softmax (https://arxiv.org/pdf/1704.06369.pdf):
     Args:
         in_features: size of each input sample
         out_features: size of each output sample
-        device_id: the ID of GPU where the model will be trained by model parallel. 
-                       if device_id=None, it will be trained on CPU without model parallel.
         m: margin
         s: scale of outputs
     """
-    def __init__(self, in_features, out_features, device_id, m = 0.35, s = 30.0):
+    def __init__(self, in_features, out_features, m = 0.35, s = 30.0):
         super(Am_softmax, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
+        self.kernel = Parameter(torch.Tensor(self.in_features, self.out_features))
+        self.kernel.data.uniform_(-1, 1).renorm_(2, 1, 1e-5).mul_(1e5)  # initialize kernel
         self.m = m
         self.s = s
-        self.device_id = device_id
 
-        self.kernel = Parameter(torch.Tensor(in_features, out_features))
-        self.kernel.data.uniform_(-1, 1).renorm_(2, 1, 1e-5).mul_(1e5)  # initialize kernel
- 
     def forward(self, embbedings, label):
-        if self.device_id == None:
-            kernel_norm = l2_norm(self.kernel, axis = 0)
-            cos_theta = torch.mm(embbedings, kernel_norm)
-        else:
-            x = embbedings
-            sub_kernels = torch.chunk(self.kernel, len(self.device_id), dim=1)
-            temp_x = x.cuda(self.device_id[0])
-            kernel_norm = l2_norm(sub_kernels[0], axis = 0).cuda(self.device_id[0])
-            cos_theta = torch.mm(temp_x, kernel_norm)
-            for i in range(1, len(self.device_id)):
-                temp_x = x.cuda(self.device_id[i])
-                kernel_norm = l2_norm(sub_kernels[i], axis = 0).cuda(self.device_id[i])
-                cos_theta = torch.cat((cos_theta, torch.mm(temp_x, kernel_norm).cuda(self.device_id[0])), dim=1)
-
+        kernel_norm = l2_norm(self.kernel, axis = 0)
+        cos_theta = torch.mm(embbedings, kernel_norm)
         cos_theta = cos_theta.clamp(-1, 1)  # for numerical stability
         phi = cos_theta - self.m
         label = label.view(-1, 1)  # size=(B,1)
